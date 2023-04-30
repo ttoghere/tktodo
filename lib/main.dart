@@ -5,6 +5,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:tktodo/bloc_folder/task_bloc/task_bloc_bloc.dart';
 import 'package:tktodo/models/task.dart';
 import 'package:tktodo/pages/tasks_page.dart';
+import 'package:tktodo/services/app_router.dart';
 import 'firebase_options.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -26,13 +27,14 @@ class MyApp extends StatelessWidget {
     return MultiBlocProvider(
       providers: [
         BlocProvider(
-          create: (context) =>
-              TaskBlocBloc()..add(AddTask(task: Task(title: "Task 1",id: "1"))),
+          create: (context) => TaskBlocBloc()
+            ..add(AddTask(task: Task(title: "Task 1", id: "1"))),
         ),
       ],
       child: MaterialApp(
         title: 'Material App',
         home: TasksPage(),
+        onGenerateRoute: AppRouter.onGenerateRoute,
       ),
     );
   }

@@ -1,10 +1,14 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+
 import 'package:tktodo/bloc_folder/blocs.dart';
 import 'package:tktodo/models/task.dart';
 import 'package:tktodo/services/guid_gen.dart';
+import 'package:tktodo/widgets/app_drawer.dart';
 
 class TasksPage extends StatelessWidget {
+  static const String routeName = "/tasks";
   TasksPage({Key? key}) : super(key: key);
 
   //Bottom Sheet for Adding Tasks
@@ -75,6 +79,7 @@ class TasksPage extends StatelessWidget {
     return BlocBuilder<TaskBlocBloc, TaskBlocState>(
       builder: (context, state) {
         return Scaffold(
+          drawer: AppDrawer(),
           appBar: AppBar(
             title: const Text('Tasks App'),
             actions: [
@@ -84,40 +89,8 @@ class TasksPage extends StatelessWidget {
               )
             ],
           ),
-          body: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Center(
-                child: Chip(
-                  label: Text(
-                    'Tasks: ${state.allTasks.length}',
-                  ),
-                ),
-              ),
-              ListView.separated(
-                  shrinkWrap: true,
-                  itemBuilder: (context, index) {
-                    var task = state.allTasks[index];
-                    return ListTile(
-                      title: Text(task.title),
-                      trailing: Checkbox(
-                        value: task.isDone,
-                        onChanged: (value) {
-                          context.read<TaskBlocBloc>().add(
-                                UpdateTask(task: task),
-                              );
-                        },
-                      ),
-                      onLongPress: () => context
-                          .read<TaskBlocBloc>()
-                          .add(DeleteTask(task: task)),
-                    );
-                  },
-                  separatorBuilder: (context, index) => const Divider(
-                        thickness: 2,
-                      ),
-                  itemCount: state.allTasks.length),
-            ],
+          body: TasksList(
+            tasks: state.allTasks,
           ),
           floatingActionButton: FloatingActionButton(
             onPressed: () {
@@ -128,6 +101,79 @@ class TasksPage extends StatelessWidget {
           ),
         );
       },
+    );
+  }
+}
+
+class TasksList extends StatelessWidget {
+  final List<Task> tasks;
+  const TasksList({
+    Key? key,
+    required this.tasks,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        Center(
+          child: Chip(
+            label: Text(
+              'Tasks: ${tasks.length}',
+            ),
+          ),
+        ),
+        ListView.separated(
+            shrinkWrap: true,
+            itemBuilder: (context, index) {
+              var task = tasks[index];
+              return TaskTile(task: task);
+            },
+            separatorBuilder: (context, index) => const Divider(
+                  thickness: 2,
+                ),
+            itemCount: tasks.length),
+      ],
+    );
+  }
+}
+
+class TaskTile extends StatelessWidget {
+  const TaskTile({
+    super.key,
+    required this.task,
+  });
+
+  final Task task;
+  void _removeOrDeleteTask(BuildContext context, Task listedTask) {
+    listedTask.isDeleted!
+        ? context.read<TaskBlocBloc>().add(DeleteTask(task: task))
+        : context.read<TaskBlocBloc>().add(RemoveTask(task: task));
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return ListTile(
+      title: Text(
+        task.title,
+        style: TextStyle(
+            fontWeight: task.isDone! ? FontWeight.bold : FontWeight.w600,
+            decoration: task.isDone!
+                ? TextDecoration.lineThrough
+                : TextDecoration.none),
+      ),
+      trailing: !task.isDeleted!
+          ? Checkbox(
+              value: task.isDone,
+              onChanged: (value) {
+                context.read<TaskBlocBloc>().add(
+                      UpdateTask(task: task),
+                    );
+              },
+            )
+          : null,
+      onLongPress: () => _removeOrDeleteTask(context, task),
     );
   }
 }
