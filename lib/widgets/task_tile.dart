@@ -3,7 +3,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:tktodo/bloc_folder/blocs.dart';
 import 'package:tktodo/models/task.dart';
 
-
 class TaskTile extends StatelessWidget {
   const TaskTile({
     super.key,
@@ -22,6 +21,7 @@ class TaskTile extends StatelessWidget {
     return ListTile(
       title: Text(
         task.title,
+        overflow: TextOverflow.ellipsis,
         style: TextStyle(
             fontWeight: task.isDone! ? FontWeight.bold : FontWeight.w600,
             decoration: task.isDone!

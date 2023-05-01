@@ -25,22 +25,17 @@ class AppDrawer extends StatelessWidget {
                 ),
                 ListTile(
                   onTap: () => Navigator.of(context)
-                      .pushReplacementNamed(TasksPage.routeName),
+                      .pushReplacementNamed(TabsPage.routeName),
                   leading: const Icon(
-                    Icons.list_alt_outlined,
+                    Icons.select_all,
                   ),
                   title: Text(
                     "My Tasks",
                     style: Theme.of(context).textTheme.labelLarge,
                   ),
-                  trailing: Text(
-                    state.pendingTasks.length.toString(),
-                    style: Theme.of(context).textTheme.labelLarge,
-                  ),
                 ),
                 const Divider(
                   thickness: 2,
-                  color: Colors.white54,
                 ),
                 ListTile(
                   onTap: () => Navigator.of(context)
@@ -59,22 +54,6 @@ class AppDrawer extends StatelessWidget {
                 ),
                 const Divider(
                   thickness: 2,
-                  color: Colors.white54,
-                ),
-                ListTile(
-                  onTap: () => Navigator.of(context)
-                      .pushReplacementNamed(TabsPage.routeName),
-                  leading: const Icon(
-                    Icons.select_all,
-                  ),
-                  title: Text(
-                    "Tabs",
-                    style: Theme.of(context).textTheme.labelLarge,
-                  ),
-                ),
-                const Divider(
-                  thickness: 2,
-                  color: Colors.white54,
                 ),
                 ListTile(
                   leading: const Icon(

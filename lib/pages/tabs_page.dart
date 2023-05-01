@@ -25,6 +25,7 @@ class _TabsPageState extends State<TabsPage> {
   //Bottom Sheet for Adding Tasks
   void _addTask({required BuildContext context}) {
     showModalBottomSheet(
+        isScrollControlled: true,
         context: context,
         builder: (context) {
           return SingleChildScrollView(
@@ -43,6 +44,7 @@ class _TabsPageState extends State<TabsPage> {
   //Way of adding tasks via on a textfield to storage
   Column _addTaskField(BuildContext context) {
     TextEditingController taskControl = TextEditingController();
+    TextEditingController descriptionControl = TextEditingController();
     return Column(
       children: [
         const Text(
@@ -59,6 +61,16 @@ class _TabsPageState extends State<TabsPage> {
               label: Text("Title"), border: OutlineInputBorder()),
         ),
         const SizedBox(
+          height: 10,
+        ),
+        TextField(
+          minLines: 3,
+          maxLines: 5,
+          controller: descriptionControl,
+          decoration: const InputDecoration(
+              label: Text("Description"), border: OutlineInputBorder()),
+        ),
+        const SizedBox(
           height: 5,
         ),
         Row(
@@ -70,8 +82,11 @@ class _TabsPageState extends State<TabsPage> {
             ),
             ElevatedButton(
               onPressed: () {
-                var task =
-                    Task(title: taskControl.text, id: GUIDGen.generate());
+                var task = Task(
+                  title: taskControl.text,
+                  id: GUIDGen.generate(),
+                  description: descriptionControl.text,
+                );
                 context.read<TaskBlocBloc>().add(
                       AddTask(task: task),
                     );

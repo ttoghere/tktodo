@@ -8,10 +8,20 @@ enum AppTheme {
 class AppThemes {
   static final appThemeData = {
     AppTheme.darkTheme: ThemeData(
-      primaryColor: Colors.black,
-      dividerColor: Colors.black54,
-      floatingActionButtonTheme: const FloatingActionButtonThemeData(
-        backgroundColor: Colors.white,
+      dividerTheme: DividerThemeData(color: Colors.red[200]),
+      iconTheme: IconThemeData(
+        color: Colors.red[200],
+      ),
+      appBarTheme: AppBarTheme(
+        color: Colors.red[200],
+        titleTextStyle: const TextStyle(
+          color: Colors.white70,
+          fontSize: 22,
+          fontWeight: FontWeight.bold,
+        ),
+      ),
+      floatingActionButtonTheme: FloatingActionButtonThemeData(
+        backgroundColor: Colors.red[200],
       ),
       textButtonTheme: TextButtonThemeData(
         style: ButtonStyle(
@@ -21,8 +31,10 @@ class AppThemes {
       textTheme: const TextTheme(
         titleMedium: TextStyle(color: Colors.white),
       ),
-      bottomNavigationBarTheme: const BottomNavigationBarThemeData(
-          backgroundColor: Colors.grey, unselectedItemColor: Colors.white),
+      bottomNavigationBarTheme: BottomNavigationBarThemeData(
+          backgroundColor: Colors.red[200],
+          unselectedItemColor: Colors.white,
+          selectedItemColor: Colors.red[900]),
       colorScheme: ColorScheme.fromSwatch(primarySwatch: Colors.grey).copyWith(
         background: const Color(0xFF212121),
         brightness: Brightness.dark,
@@ -34,7 +46,15 @@ class AppThemes {
 
     AppTheme.lightTheme: ThemeData(
       primaryColor: Colors.white,
-      dividerColor: const Color(0xff757575),
+      dividerTheme: DividerThemeData(color: Colors.red[900]),
+      appBarTheme: AppBarTheme(
+        color: Colors.red[900],
+        titleTextStyle: const TextStyle(
+          color: Colors.white,
+          fontSize: 22,
+          fontWeight: FontWeight.bold,
+        ),
+      ),
       floatingActionButtonTheme: const FloatingActionButtonThemeData(
         backgroundColor: Colors.black,
         foregroundColor: Colors.white,
@@ -47,10 +67,10 @@ class AppThemes {
       textTheme: const TextTheme(
         titleMedium: TextStyle(color: Colors.black),
       ),
-      bottomNavigationBarTheme: const BottomNavigationBarThemeData(
-          backgroundColor: Colors.grey,
-          selectedItemColor: Colors.black,
-          unselectedItemColor: Colors.white),
+      bottomNavigationBarTheme: BottomNavigationBarThemeData(
+          backgroundColor: Colors.red[200],
+          unselectedItemColor: Colors.white,
+          selectedItemColor: Colors.red[900]),
       colorScheme: ColorScheme.fromSwatch(primarySwatch: Colors.grey).copyWith(
         background: const Color(0xFFE5E5E5),
         brightness: Brightness.light,
