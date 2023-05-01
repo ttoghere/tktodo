@@ -2,8 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:tktodo/app_theme.dart';
+import 'package:tktodo/bloc_folder/blocs.dart';
 import 'package:tktodo/bloc_folder/task_bloc/task_bloc_bloc.dart';
 import 'package:tktodo/models/task.dart';
+import 'package:tktodo/pages/tabs_page.dart';
 import 'package:tktodo/pages/tasks_page.dart';
 import 'package:tktodo/services/app_router.dart';
 import 'firebase_options.dart';
@@ -26,15 +29,20 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
-        BlocProvider(
-          create: (context) => TaskBlocBloc()
-            ..add(AddTask(task: Task(title: "Task 1", id: "1"))),
-        ),
+        BlocProvider(create: (context) => TaskBlocBloc()),
+        BlocProvider(create: (context) => SwitchBloc()),
       ],
-      child: MaterialApp(
-        title: 'Material App',
-        home: TasksPage(),
-        onGenerateRoute: AppRouter.onGenerateRoute,
+      child: BlocBuilder<SwitchBloc, SwitchState>(
+        builder: (context, state) {
+          return MaterialApp(
+            title: 'Material App',
+            theme: state.switchValue
+                ? AppThemes.appThemeData[AppTheme.darkTheme]
+                : AppThemes.appThemeData[AppTheme.lightTheme],
+            initialRoute: TabsPage.routeName,
+            onGenerateRoute: AppRouter.onGenerateRoute,
+          );
+        },
       ),
     );
   }

@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:tktodo/bloc_folder/blocs.dart';
-import 'package:tktodo/pages/tasks_page.dart';
-import 'package:tktodo/widgets/app_drawer.dart';
+import 'package:tktodo/widgets/widgets.dart';
 
 class RecycleBin extends StatefulWidget {
   static const String routeName = "/bin";
