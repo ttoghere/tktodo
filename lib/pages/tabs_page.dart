@@ -83,6 +83,7 @@ class _TabsPageState extends State<TabsPage> {
             ElevatedButton(
               onPressed: () {
                 var task = Task(
+                  date: DateTime.now().toString(),
                   title: taskControl.text,
                   id: GUIDGen.generate(),
                   description: descriptionControl.text,

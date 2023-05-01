@@ -27,9 +27,11 @@ class _RecycleBinState extends State<RecycleBin> {
         ),
         body: BlocBuilder<TaskBlocBloc, TaskBlocState>(
           builder: (context, state) {
-            return Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [TasksList(tasks: state.removedTasks)],
+            return SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [TasksList(tasks: state.removedTasks)],
+              ),
             );
           },
         ));

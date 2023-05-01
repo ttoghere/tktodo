@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:equatable/equatable.dart';
 import 'package:tktodo/bloc_folder/blocs.dart';
 import 'package:tktodo/models/task.dart';
@@ -11,6 +13,10 @@ class TaskBlocBloc extends HydratedBloc<TaskBlocEvent, TaskBlocState> {
     on<UpdateTask>(_onUpdateTask);
     on<DeleteTask>(_onDeleteTask);
     on<RemoveTask>(_onRemoveTask);
+    on<MarkFavoriteOrUnfavoriteTask>(_onMarkFavoriteOrUnfavoriteTask);
+    on<EditTask>(_onEditTask);
+    on<RestoreTask>(_onRestoreTask);
+    on<DeleteAllTasks>(_onDeleteAllTask);
   }
   void _onAddTask(AddTask event, Emitter<TaskBlocState> emit) {
     final state = this.state;
@@ -82,4 +88,55 @@ class TaskBlocBloc extends HydratedBloc<TaskBlocEvent, TaskBlocState> {
   Map<String, dynamic>? toJson(TaskBlocState state) {
     return state.toMap();
   }
+
+  void _onMarkFavoriteOrUnfavoriteTask(
+      MarkFavoriteOrUnfavoriteTask event, Emitter<TaskBlocState> emit) {
+    final state = this.state;
+    List<Task> pendingTasks = state.pendingTasks;
+    List<Task> completedTasks = state.completedTasks;
+    List<Task> favoriteTasks = state.favoriteTasks;
+    if (event.task.isDone == false) {
+      if (event.task.isFavorite == false) {
+        var taskIndex = pendingTasks.indexOf(event.task);
+        pendingTasks = List.from(pendingTasks)
+          ..remove(event.task)
+          ..insert(taskIndex, event.task.copyWith(isFavorite: true));
+        favoriteTasks.insert(0, event.task.copyWith(isFavorite: true));
+      } else {
+        var taskIndex = pendingTasks.indexOf(event.task);
+        pendingTasks = List.from(pendingTasks)
+          ..remove(event.task)
+          ..insert(taskIndex, event.task.copyWith(isFavorite: false));
+        favoriteTasks.remove(event.task);
+      }
+    } else {
+      if (event.task.isFavorite == false) {
+        var taskIndex = completedTasks.indexOf(event.task);
+        completedTasks = List.from(completedTasks)
+          ..remove(event.task)
+          ..insert(taskIndex, event.task.copyWith(isFavorite: true));
+        favoriteTasks.insert(0, event.task.copyWith(isFavorite: true));
+      } else {
+        var taskIndex = completedTasks.indexOf(event.task);
+        completedTasks = List.from(completedTasks)
+          ..remove(event.task)
+          ..insert(taskIndex, event.task.copyWith(isFavorite: false));
+        favoriteTasks.remove(event.task);
+      }
+    }
+    emit(
+      TaskBlocState(
+        pendingTasks: pendingTasks,
+        favoriteTasks: favoriteTasks,
+        completedTasks: completedTasks,
+        removedTasks: state.removedTasks,
+      ),
+    );
+  }
+
+  void _onEditTask(EditTask event, Emitter<TaskBlocState> emit) {}
+
+  void _onRestoreTask(RestoreTask event, Emitter<TaskBlocState> emit) {}
+
+  void _onDeleteAllTask(DeleteAllTasks event, Emitter<TaskBlocState> emit) {}
 }
