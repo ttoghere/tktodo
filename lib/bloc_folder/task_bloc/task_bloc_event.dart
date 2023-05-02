@@ -35,8 +35,6 @@ class DeleteTask extends TaskBlocEvent {
   List<Object> get props => [task];
 }
 
-//new events for the 6th_part
-// 1st
 class MarkFavoriteOrUnfavoriteTask extends TaskBlocEvent {
   final Task task;
   const MarkFavoriteOrUnfavoriteTask({
@@ -47,7 +45,6 @@ class MarkFavoriteOrUnfavoriteTask extends TaskBlocEvent {
   List<Object> get props => [task];
 }
 
-//2nd
 class EditTask extends TaskBlocEvent {
   final Task oldTask;
   final Task newTask;
@@ -62,8 +59,6 @@ class EditTask extends TaskBlocEvent {
         newTask,
       ];
 }
-
-//3rd
 class RestoreTask extends TaskBlocEvent {
   final Task task;
   const RestoreTask({
@@ -74,5 +69,5 @@ class RestoreTask extends TaskBlocEvent {
   List<Object> get props => [task];
 }
 
-// //4th
+
 class DeleteAllTasks extends TaskBlocEvent {}

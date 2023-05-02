@@ -79,16 +79,6 @@ class TaskBlocBloc extends HydratedBloc<TaskBlocEvent, TaskBlocState> {
     );
   }
 
-  @override
-  TaskBlocState? fromJson(Map<String, dynamic> json) {
-    return TaskBlocState.fromMap(json);
-  }
-
-  @override
-  Map<String, dynamic>? toJson(TaskBlocState state) {
-    return state.toMap();
-  }
-
   void _onMarkFavoriteOrUnfavoriteTask(
       MarkFavoriteOrUnfavoriteTask event, Emitter<TaskBlocState> emit) {
     final state = this.state;
@@ -134,9 +124,59 @@ class TaskBlocBloc extends HydratedBloc<TaskBlocEvent, TaskBlocState> {
     );
   }
 
-  void _onEditTask(EditTask event, Emitter<TaskBlocState> emit) {}
+  void _onEditTask(EditTask event, Emitter<TaskBlocState> emit) {
+    final state = this.state;
+    List<Task> favouriteTasks = state.favoriteTasks;
+    if (event.oldTask.isFavorite == true) {
+      favouriteTasks
+        ..remove(event.oldTask)
+        ..insert(0, event.newTask);
+    }
+    emit(TaskBlocState(
+      pendingTasks: List.from(state.pendingTasks)
+        ..remove(event.oldTask)
+        ..insert(0, event.newTask),
+      completedTasks: state.completedTasks..remove(event.oldTask),
+      favoriteTasks: favouriteTasks,
+      removedTasks: state.removedTasks,
+    ));
+  }
 
-  void _onRestoreTask(RestoreTask event, Emitter<TaskBlocState> emit) {}
+  void _onRestoreTask(RestoreTask event, Emitter<TaskBlocState> emit) {
+    final state = this.state;
+    emit(
+      TaskBlocState(
+        removedTasks: List.from(state.removedTasks)..remove(event.task),
+        pendingTasks: List.from(state.pendingTasks)
+          ..insert(
+              0,
+              event.task.copyWith(
+                  isDeleted: false, isDone: false, isFavorite: false)),
+        completedTasks: state.completedTasks,
+        favoriteTasks: state.favoriteTasks,
+      ),
+    );
+  }
 
-  void _onDeleteAllTask(DeleteAllTasks event, Emitter<TaskBlocState> emit) {}
+  void _onDeleteAllTask(DeleteAllTasks event, Emitter<TaskBlocState> emit) {
+    final state = this.state;
+    emit(
+      TaskBlocState(
+        removedTasks: List.from(state.removedTasks)..clear(),
+        pendingTasks: state.pendingTasks,
+        completedTasks: state.completedTasks,
+        favoriteTasks: state.favoriteTasks,
+      ),
+    );
+  }
+
+  @override
+  TaskBlocState? fromJson(Map<String, dynamic> json) {
+    return TaskBlocState.fromMap(json);
+  }
+
+  @override
+  Map<String, dynamic>? toJson(TaskBlocState state) {
+    return state.toMap();
+  }
 }

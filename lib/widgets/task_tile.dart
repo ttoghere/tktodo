@@ -5,6 +5,10 @@ import 'package:intl/intl.dart';
 
 import 'package:tktodo/bloc_folder/blocs.dart';
 import 'package:tktodo/models/task.dart';
+import 'package:tktodo/services/guid_gen.dart';
+import 'package:tktodo/widgets/edit_task.dart';
+
+import 'pop_up_menu.dart';
 
 class TaskTile extends StatelessWidget {
   const TaskTile({
@@ -74,6 +78,12 @@ class TaskTile extends StatelessWidget {
                     : null,
               ),
               PopUP(
+                restoreTaskCallback: () =>
+                    context.read<TaskBlocBloc>().add(RestoreTask(task: task)),
+                editTaskCallback: () {
+                  Navigator.of(context).pop;
+                  _editTask(context);
+                },
                 likeOrDislike: () => context
                     .read<TaskBlocBloc>()
                     .add(MarkFavoriteOrUnfavoriteTask(task: task)),
@@ -88,91 +98,19 @@ class TaskTile extends StatelessWidget {
     );
   }
 
-  ListTile _demo(BuildContext context) {
-    return ListTile(
-      title: Text(
-        task.title,
-        overflow: TextOverflow.ellipsis,
-        style: TextStyle(
-            fontWeight: task.isDone! ? FontWeight.bold : FontWeight.w600,
-            decoration: task.isDone!
-                ? TextDecoration.lineThrough
-                : TextDecoration.none),
-      ),
-      trailing: !task.isDeleted!
-          ? Checkbox(
-              value: task.isDone,
-              onChanged: (value) {
-                context.read<TaskBlocBloc>().add(
-                      UpdateTask(task: task),
-                    );
-              },
-            )
-          : null,
-      onLongPress: () => _removeOrDeleteTask(context, task),
-    );
-  }
-}
-
-class PopUP extends StatelessWidget {
-  final VoidCallback cancelOrDeleteCallback;
-  final VoidCallback likeOrDislike;
-
-  final Task task;
-  const PopUP({
-    Key? key,
-    required this.likeOrDislike,
-    required this.cancelOrDeleteCallback,
-    required this.task,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return PopupMenuButton(
-      itemBuilder: task.isDeleted == false
-          ? ((context) => [
-                PopupMenuItem(
-                  onTap: () {},
-                  child: TextButton.icon(
-                      onPressed: null,
-                      icon: const Icon(Icons.edit),
-                      label: const Text("Edit")),
+  void _editTask(BuildContext context) {
+    showModalBottomSheet(
+        context: context,
+        isScrollControlled: true,
+        builder: (context) => SingleChildScrollView(
+              child: Container(
+                padding: EdgeInsets.only(
+                  bottom: MediaQuery.of(context).viewInsets.bottom,
                 ),
-                PopupMenuItem(
-                  onTap: likeOrDislike,
-                  child: TextButton.icon(
-                      onPressed: null,
-                      icon: task.isFavorite == false
-                          ? const Icon(Icons.bookmark_add_outlined)
-                          : const Icon(Icons.bookmark_remove),
-                      label: task.isFavorite == false
-                          ? const Text("Add To Bookmarks")
-                          : const Text("Remove From Bookmarks")),
+                child: EditTaskScreen(
+                  oldTask: task,
                 ),
-                PopupMenuItem(
-                  onTap: cancelOrDeleteCallback,
-                  child: TextButton.icon(
-                      onPressed: null,
-                      icon: const Icon(Icons.delete),
-                      label: const Text("Delete")),
-                ),
-              ])
-          : (context) => [
-                PopupMenuItem(
-                  onTap: () {},
-                  child: TextButton.icon(
-                      onPressed: null,
-                      icon: const Icon(Icons.restore),
-                      label: const Text("Restore")),
-                ),
-                PopupMenuItem(
-                  onTap: () {},
-                  child: TextButton.icon(
-                      onPressed: null,
-                      icon: const Icon(Icons.delete_forever),
-                      label: const Text("Delete Forever")),
-                ),
-              ],
-    );
+              ),
+            ));
   }
 }
