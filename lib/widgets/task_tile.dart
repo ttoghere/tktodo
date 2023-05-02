@@ -1,11 +1,8 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
-
 import 'package:tktodo/bloc_folder/blocs.dart';
 import 'package:tktodo/models/task.dart';
-import 'package:tktodo/services/guid_gen.dart';
 import 'package:tktodo/widgets/edit_task.dart';
 
 import 'pop_up_menu.dart';

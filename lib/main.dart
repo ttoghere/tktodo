@@ -6,6 +6,8 @@ import 'package:tktodo/app_theme.dart';
 import 'package:tktodo/bloc_folder/blocs.dart';
 import 'package:tktodo/bloc_folder/task_bloc/task_bloc_bloc.dart';
 import 'package:tktodo/models/task.dart';
+import 'package:tktodo/pages/login_page.dart';
+import 'package:tktodo/pages/register_page.dart';
 import 'package:tktodo/pages/tabs_page.dart';
 import 'package:tktodo/pages/tasks_page.dart';
 import 'package:tktodo/services/app_router.dart';
@@ -36,10 +38,11 @@ class MyApp extends StatelessWidget {
         builder: (context, state) {
           return MaterialApp(
             title: 'Material App',
+            debugShowCheckedModeBanner: false,
             theme: state.switchValue
                 ? AppThemes.appThemeData[AppTheme.darkTheme]
                 : AppThemes.appThemeData[AppTheme.lightTheme],
-            initialRoute: TabsPage.routeName,
+            initialRoute: LoginPage.routeName,
             onGenerateRoute: AppRouter.onGenerateRoute,
           );
         },
