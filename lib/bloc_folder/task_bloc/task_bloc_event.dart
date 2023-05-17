@@ -7,6 +7,11 @@ abstract class TaskBlocEvent extends Equatable {
   List<Object> get props => [];
 }
 
+class GetAllTasks extends TaskBlocEvent {
+  @override
+  List<Object> get props => [];
+}
+
 class AddTask extends TaskBlocEvent {
   final Task task;
   const AddTask({required this.task});
@@ -59,6 +64,7 @@ class EditTask extends TaskBlocEvent {
         newTask,
       ];
 }
+
 class RestoreTask extends TaskBlocEvent {
   final Task task;
   const RestoreTask({
@@ -68,6 +74,5 @@ class RestoreTask extends TaskBlocEvent {
   @override
   List<Object> get props => [task];
 }
-
 
 class DeleteAllTasks extends TaskBlocEvent {}

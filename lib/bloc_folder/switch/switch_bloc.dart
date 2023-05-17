@@ -1,6 +1,6 @@
 
 import 'package:equatable/equatable.dart';
-import 'package:tktodo/bloc_folder/blocs.dart';
+import 'package:tktodo/bloc_folder/bloc_shelf.dart';
 
 
 part 'switch_event.dart';

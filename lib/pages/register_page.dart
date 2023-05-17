@@ -1,8 +1,10 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:tktodo/bloc_folder/bloc_shelf.dart';
 import 'dart:developer';
 
 import 'package:tktodo/pages/login_page.dart';
+import 'package:tktodo/repositories/auth/auth_repository.dart';
 
 class RegisterPage extends StatefulWidget {
   static const routeName = "/register";
@@ -67,21 +69,23 @@ class _RegisterPageState extends State<RegisterPage> {
               ),
             ),
             ElevatedButton(
-              onPressed: () {
+              onPressed: () async {
                 final isValid = _formKey.currentState!.validate();
                 isValid
-                    ? _auth
-                        .createUserWithEmailAndPassword(
-                            email: _emailController.text,
+                    ? await context
+                        .read<AuthRepository>()
+                        .signUp(
+                            username: _emailController.text,
                             password: _passwordController.text)
-                        .then((value) {
-                        log("Value: $value");
-                        Navigator.of(context)
-                            .pushReplacementNamed(LoginPage.routeName);
-                      })
-                    : null;
+                        .whenComplete(() => Navigator.of(context)
+                            .pushReplacementNamed(LoginPage.routeName))
+                    : showDialog(
+                        context: context,
+                        builder: (context) => const Dialog(
+                              child: Text("Something went wrong"),
+                            ));
               },
-              child: Text("Register"),
+              child: const Text("Register"),
             ),
           ],
         ),

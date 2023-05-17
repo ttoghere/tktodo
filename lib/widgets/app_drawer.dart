@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:tktodo/bloc_folder/blocs.dart';
+import 'package:get_storage/get_storage.dart';
+import 'package:tktodo/bloc_folder/bloc_shelf.dart';
+import 'package:tktodo/pages/login_page.dart';
 import 'package:tktodo/pages/recycle_bin.dart';
 import 'package:tktodo/pages/tabs_page.dart';
-import 'package:tktodo/pages/tasks_page.dart';
+import 'package:tktodo/repositories/auth/auth_repository.dart';
 
 class AppDrawer extends StatelessWidget {
   const AppDrawer({super.key});
@@ -78,7 +79,25 @@ class AppDrawer extends StatelessWidget {
                       );
                     },
                   ),
-                )
+                ),
+                const Divider(
+                  thickness: 2,
+                ),
+                ListTile(
+                  onTap: () {
+                    context.read<AuthRepository>().signOut().then((value) {
+                      GetStorage().remove("token");
+                      Navigator.of(context).pushNamed(LoginPage.routeName);
+                    });
+                  },
+                  leading: const Icon(
+                    Icons.logout_outlined,
+                  ),
+                  title: Text(
+                    "Sign Out",
+                    style: Theme.of(context).textTheme.labelLarge,
+                  ),
+                ),
               ],
             );
           },

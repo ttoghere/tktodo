@@ -1,14 +1,18 @@
 import 'dart:async';
 
 import 'package:equatable/equatable.dart';
-import 'package:tktodo/bloc_folder/blocs.dart';
+import 'package:tktodo/bloc_folder/bloc_shelf.dart';
 import 'package:tktodo/models/task.dart';
+import 'package:tktodo/repositories/tasks/task_repository.dart';
 
 part 'task_bloc_event.dart';
 part 'task_bloc_state.dart';
 
-class TaskBlocBloc extends HydratedBloc<TaskBlocEvent, TaskBlocState> {
-  TaskBlocBloc() : super(const TaskBlocState()) {
+class TaskBlocBloc extends Bloc<TaskBlocEvent, TaskBlocState> {
+  final TaskRepository _taskRepository;
+  TaskBlocBloc({required TaskRepository taskRepository})
+      : _taskRepository = taskRepository,
+        super(const TaskBlocState()) {
     on<AddTask>(_onAddTask);
     on<UpdateTask>(_onUpdateTask);
     on<DeleteTask>(_onDeleteTask);
@@ -17,9 +21,40 @@ class TaskBlocBloc extends HydratedBloc<TaskBlocEvent, TaskBlocState> {
     on<EditTask>(_onEditTask);
     on<RestoreTask>(_onRestoreTask);
     on<DeleteAllTasks>(_onDeleteAllTask);
+    on<GetAllTasks>(_onGetAllTasks);
   }
-  void _onAddTask(AddTask event, Emitter<TaskBlocState> emit) {
+
+  void _onGetAllTasks(GetAllTasks event, Emitter<TaskBlocState> emit) async {
+    List<Task> pendingTasks = [];
+    List<Task> completedTasks = [];
+    List<Task> favoriteTasks = [];
+    List<Task> removedTasks = [];
+    await _taskRepository.getTasks().then((value) {
+      for (var task in value) {
+        if (task.isDeleted == true) {
+          removedTasks.add(task);
+        } else {
+          if (task.isFavorite == true) {
+            favoriteTasks.add(task);
+          } else if (task.isDone == true) {
+            completedTasks.add(task);
+          } else {
+            pendingTasks.add(task);
+          }
+        }
+      }
+    });
+    emit(TaskBlocState(
+      pendingTasks: pendingTasks,
+      completedTasks: completedTasks,
+      favoriteTasks: favoriteTasks,
+      removedTasks: removedTasks,
+    ));
+  }
+
+  void _onAddTask(AddTask event, Emitter<TaskBlocState> emit) async {
     final state = this.state;
+    await _taskRepository.addTask(task: event.task);
     emit(
       TaskBlocState(
         pendingTasks: List.from(state.pendingTasks)..add(event.task),
@@ -170,13 +205,5 @@ class TaskBlocBloc extends HydratedBloc<TaskBlocEvent, TaskBlocState> {
     );
   }
 
-  @override
-  TaskBlocState? fromJson(Map<String, dynamic> json) {
-    return TaskBlocState.fromMap(json);
-  }
 
-  @override
-  Map<String, dynamic>? toJson(TaskBlocState state) {
-    return state.toMap();
-  }
 }

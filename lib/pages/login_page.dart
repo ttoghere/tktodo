@@ -1,6 +1,10 @@
+import 'dart:developer';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:tktodo/bloc_folder/bloc_shelf.dart';
 import 'package:tktodo/pages/tabs_page.dart';
+import 'package:tktodo/repositories/auth/auth_repository.dart';
 
 class LoginPage extends StatefulWidget {
   static const routeName = "/login";
@@ -70,14 +74,22 @@ class _LoginPageState extends State<LoginPage> {
                 onPressed: () {
                   final isValid = _formKey.currentState!.validate();
                   isValid
-                      ? _auth
-                          .signInWithEmailAndPassword(
-                          email: _emailController.text,
-                          password: _passwordControler.text,
-                        )
+                      ? context
+                          .read<AuthRepository>()
+                          .logIn(
+                              username: _emailController.text,
+                              password: _passwordControler.text)
+                          .onError((error, stackTrace) {})
                           .then((value) {
                           Navigator.of(context)
                               .pushReplacementNamed(TabsPage.routeName);
+                        }).onError((error, stackTrace) {
+                          var snackbar = SnackBar(
+                              content:
+                                  Text("Error: $error, Stack: $stackTrace"));
+                          ScaffoldMessenger.of(context).showSnackBar(snackbar);
+                        }).then((value) {
+                          log("Value: $value");
                         })
                       : null;
                 },

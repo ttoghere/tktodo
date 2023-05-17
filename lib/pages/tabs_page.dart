@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:tktodo/bloc_folder/blocs.dart';
+import 'package:tktodo/bloc_folder/bloc_shelf.dart';
 import 'package:tktodo/models/task.dart';
 import 'package:tktodo/pages/pages.dart';
 import 'package:tktodo/services/services.dart';
@@ -7,7 +7,7 @@ import 'package:tktodo/widgets/widgets.dart';
 
 class TabsPage extends StatefulWidget {
   static const routeName = "/tabs";
-  TabsPage({super.key});
+  const TabsPage({super.key});
 
   @override
   State<TabsPage> createState() => _TabsPageState();
@@ -21,6 +21,11 @@ class _TabsPageState extends State<TabsPage> {
   ];
 
   int _selectedIndex = 0;
+  @override
+  void initState() {
+    context.read<TaskBlocBloc>().add(GetAllTasks());
+    super.initState();
+  }
 
   //Bottom Sheet for Adding Tasks
   void _addTask({required BuildContext context}) {
@@ -91,6 +96,7 @@ class _TabsPageState extends State<TabsPage> {
                 context.read<TaskBlocBloc>().add(
                       AddTask(task: task),
                     );
+                context.read<TaskBlocBloc>().add(GetAllTasks());
                 Navigator.of(context).pop();
               },
               child: const Text("Add"),
