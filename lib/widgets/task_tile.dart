@@ -16,8 +16,14 @@ class TaskTile extends StatelessWidget {
   final Task task;
   void _removeOrDeleteTask(BuildContext context, Task listedTask) {
     listedTask.isDeleted!
-        ? context.read<TaskBlocBloc>().add(DeleteTask(task: task))
-        : context.read<TaskBlocBloc>().add(RemoveTask(task: task));
+        ? {
+            context.read<TaskBlocBloc>().add(DeleteTask(task: task)),
+            context.read<TaskBlocBloc>().add(GetAllTasks())
+          }
+        : {
+            context.read<TaskBlocBloc>().add(RemoveTask(task: task)),
+            context.read<TaskBlocBloc>().add(GetAllTasks())
+          };
   }
 
   @override
@@ -71,19 +77,25 @@ class TaskTile extends StatelessWidget {
                         context.read<TaskBlocBloc>().add(
                               UpdateTask(task: task),
                             );
+                        context.read<TaskBlocBloc>().add(GetAllTasks());
                       }
                     : null,
               ),
               PopUP(
-                restoreTaskCallback: () =>
-                    context.read<TaskBlocBloc>().add(RestoreTask(task: task)),
+                restoreTaskCallback: () {
+                  context.read<TaskBlocBloc>().add(RestoreTask(task: task));
+                  context.read<TaskBlocBloc>().add(GetAllTasks());
+                },
                 editTaskCallback: () {
                   Navigator.of(context).pop;
                   _editTask(context);
                 },
-                likeOrDislike: () => context
-                    .read<TaskBlocBloc>()
-                    .add(MarkFavoriteOrUnfavoriteTask(task: task)),
+                likeOrDislike: () {
+                  context
+                      .read<TaskBlocBloc>()
+                      .add(MarkFavoriteOrUnfavoriteTask(task: task));
+                  context.read<TaskBlocBloc>().add(GetAllTasks());
+                },
                 task: task,
                 cancelOrDeleteCallback: () =>
                     _removeOrDeleteTask(context, task),

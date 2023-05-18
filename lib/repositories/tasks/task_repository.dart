@@ -34,4 +34,36 @@ class TaskRepository extends BaseTaskRepository {
       throw Exception(e.toString());
     }
   }
+
+  @override
+  Future<void> updateTask({Task? task}) async {
+    try {
+      final data = _firebaseFirestore.collection(GetStorage().read("email"));
+      data.doc(task!.id).update(task.toMap());
+    } catch (err) {
+      throw Exception(err.toString());
+    }
+  }
+
+  @override
+  Future<void> deleteTask({Task? task}) async {
+    try {
+      final data = _firebaseFirestore.collection(GetStorage().read("email"));
+      data.doc(task!.id).delete();
+    } catch (err) {
+      throw Exception(err.toString());
+    }
+  }
+
+  @override
+  Future<void> deleteAllRemovedTasks({List<Task>? taskList}) async {
+    try {
+      final data = _firebaseFirestore.collection(GetStorage().read("email"));
+      for (var task in taskList!) {
+        data.doc(task.id).delete();
+      }
+    } catch (err) {
+      throw Exception(err.toString());
+    }
+  }
 }

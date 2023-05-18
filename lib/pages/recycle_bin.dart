@@ -20,8 +20,11 @@ class _RecycleBinState extends State<RecycleBin> {
           title: const Text('Recycle Bin'),
           actions: [
             IconButton(
-              onPressed: () {},
-              icon: const Icon(Icons.add),
+              onPressed: () {
+                context.read<TaskBlocBloc>().add(DeleteAllTasks());
+                context.read<TaskBlocBloc>().add(GetAllTasks());
+              },
+              icon: const Icon(Icons.delete_forever),
             )
           ],
         ),
@@ -30,7 +33,9 @@ class _RecycleBinState extends State<RecycleBin> {
             return SingleChildScrollView(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
-                children: [TasksList(tasks: state.removedTasks)],
+                children: [
+                  TasksList(tasks: state.removedTasks),
+                ],
               ),
             );
           },
