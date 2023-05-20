@@ -1,8 +1,8 @@
 import 'dart:developer';
-
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:tktodo/bloc_folder/bloc_shelf.dart';
+import 'package:tktodo/pages/forgot_pass_page.dart';
+import 'package:tktodo/pages/register_page.dart';
 import 'package:tktodo/pages/tabs_page.dart';
 import 'package:tktodo/repositories/auth/auth_repository.dart';
 
@@ -18,7 +18,6 @@ class _LoginPageState extends State<LoginPage> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordControler = TextEditingController();
   final _formKey = GlobalKey<FormState>();
-  final FirebaseAuth _auth = FirebaseAuth.instance;
   @override
   void dispose() {
     _emailController.dispose();
@@ -29,15 +28,19 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text("Login"),
-      ),
       body: Form(
         key: _formKey,
-        child: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 20),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
+              Text(
+                "TKTodo",
+                style: Theme.of(context).textTheme.headlineMedium!.copyWith(
+                      color: Colors.red[900],
+                    ),
+              ),
               Padding(
                 padding: const EdgeInsets.all(8),
                 child: TextFormField(
@@ -96,7 +99,16 @@ class _LoginPageState extends State<LoginPage> {
                 child: const Text("Login"),
               ),
               TextButton(
-                  onPressed: () {}, child: const Text("Don't have an account?"))
+                  onPressed: () {
+                    Navigator.of(context).pushNamed(RegisterPage.routeName);
+                  },
+                  child: const Text("Don't have an account?")),
+              TextButton(
+                  onPressed: () {
+                    Navigator.of(context)
+                        .pushNamed(ForgotPasswordPage.routeName);
+                  },
+                  child: const Text("Don't remember the password?"))
             ],
           ),
         ),

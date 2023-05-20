@@ -12,7 +12,7 @@ class SplashScreen extends StatefulWidget {
 }
 
 class _SplashScreenState extends State<SplashScreen> {
-  GetStorage _getStorage = GetStorage();
+  final GetStorage _getStorage = GetStorage();
   @override
   void initState() {
     super.initState();

@@ -24,7 +24,16 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("Forgot Password")),
+      appBar: AppBar(
+        elevation: 0,
+        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+        title: Text(
+          "TKTodo",
+          style: Theme.of(context).textTheme.headlineMedium!.copyWith(
+                color: Colors.red[900],
+              ),
+        ),
+      ),
       body: Form(
           key: _formKey,
           child: Padding(
@@ -33,6 +42,15 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
+                Text(
+                  "Forgot password ?",
+                  style: Theme.of(context).textTheme.headlineMedium!.copyWith(
+                        color: Colors.red[900],
+                      ),
+                ),
+                const SizedBox(
+                  height: 20,
+                ),
                 TextFormField(
                   decoration: const InputDecoration(
                     border: UnderlineInputBorder(),
