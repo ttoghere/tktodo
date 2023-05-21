@@ -1,9 +1,11 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:developer';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart' as authentication;
 import 'package:firebase_core/firebase_core.dart';
 import 'package:get_storage/get_storage.dart';
+import 'package:tktodo/pages/tabs_page.dart';
 import 'package:tktodo/repositories/auth/base_auth_repository.dart';
 
 class AuthRepository extends BaseAuthRepository {
@@ -24,32 +26,39 @@ class AuthRepository extends BaseAuthRepository {
   }
 
   @override
-  Future<void> logIn(
-      {required String username, required String password}) async {
+  Future<void> logIn({
+    required String username,
+    required String password,
+  }) async {
     try {
-      auth
-          .signInWithEmailAndPassword(
-        email: username,
-        password: password,
-      )
+      await auth
+          .signInWithEmailAndPassword(email: username, password: password)
           .then((value) {
         GetStorage().write("token", value.user!.uid);
         GetStorage().write("email", value.user!.email);
         log("User Token: ${GetStorage().read("token")} from storage");
+        Navigator.of(context).pushReplacementNamed(TabsPage.routeName);
       });
-      //     .onError((error, stackTrace) {
-      //   var snackbar =
-      //       SnackBar(content: Text("Error: $error, Stack: $stackTrace"));
-      //   return ScaffoldMessenger.of(context).showSnackBar(snackbar);
-      // }).then((value) {
-      //   log("Value: $value");
-      // });
-    } on FirebaseException catch (error) {
-      (context.mounted)
-          ? ScaffoldMessenger.of(context)
-              .showSnackBar(SnackBar(content: Text(error.toString())))
-          : log("Error: ${error.message}");
+    } on FirebaseAuthException catch (error) {
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text(error.message!)));
     }
+    //   auth
+    //       .signInWithEmailAndPassword(
+    //     email: username,
+    //     password: password,
+    //   )
+    //     .then((value) {
+    //   GetStorage().write("token", value.user!.uid);
+    //   GetStorage().write("email", value.user!.email);
+    //   log("User Token: ${GetStorage().read("token")} from storage");
+    // });
+    //   errorMessage = "";
+    // } on authentication.FirebaseAuthException catch (error) {
+    //   errorMessage = error.message!;
+    //   ScaffoldMessenger.of(context)
+    //       .showSnackBar(SnackBar(content: Text(errorMessage)));
+    // }
   }
 
   @override

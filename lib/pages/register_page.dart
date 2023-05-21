@@ -15,6 +15,42 @@ class _RegisterPageState extends State<RegisterPage> {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+
+  String? validateEmail(String? formEmail) {
+    if (formEmail == null || formEmail.isEmpty) {
+      return "Email is required";
+    }
+    //RegExp için tasarım örneği
+    String pattern = r'\w+@\w+\.\w+';
+    RegExp regex = RegExp(pattern);
+    if (!regex.hasMatch(formEmail)) return "Invalid email adress";
+    return null;
+  }
+
+  String? validatePassword(String? formPassword) {
+    if (formPassword == null || formPassword.isEmpty) {
+      return "Password is required";
+    }
+    String pattern = r'^.{8,}$';
+    RegExp regExp = RegExp(pattern);
+    if (!regExp.hasMatch(formPassword)) {
+      /*
+        r'^
+          (?=.*[A-Z])       // should contain at least one upper case
+          (?=.*[a-z])       // should contain at least one lower case
+          (?=.*?[0-9])      // should contain at least one digit
+          (?=.*?[!@#\$&*~]) // should contain at least one Special character
+          .{8,}             // Must be at least 8 characters in length  
+        $ 
+       * 
+      */
+      return '''
+			Password must be at least 8 characters,
+			''';
+    }
+    return null;
+  }
+
   @override
   void dispose() {
     _emailController.dispose();
@@ -55,12 +91,7 @@ class _RegisterPageState extends State<RegisterPage> {
                   decoration:
                       const InputDecoration(labelText: "Enter your Email"),
                   keyboardType: TextInputType.emailAddress,
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return "Email is required";
-                    }
-                    return null;
-                  },
+                  validator: validateEmail,
                 ),
               ),
               Padding(
@@ -69,14 +100,7 @@ class _RegisterPageState extends State<RegisterPage> {
                   controller: _passwordController,
                   decoration:
                       const InputDecoration(labelText: "Enter your password"),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return "Password is required";
-                    } else if (value.length <= 6) {
-                      return "Password must be longer than 6 characters";
-                    }
-                    return null;
-                  },
+                  validator: validatePassword,
                 ),
               ),
               ElevatedButton(
@@ -90,11 +114,9 @@ class _RegisterPageState extends State<RegisterPage> {
                               password: _passwordController.text)
                           .whenComplete(() => Navigator.of(context)
                               .pushReplacementNamed(LoginPage.routeName))
-                      : showDialog(
-                          context: context,
-                          builder: (context) => const Dialog(
-                                child: Text("Something went wrong"),
-                              ));
+                      : ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                              content: Text("Something Went Wrong")));
                 },
                 child: const Text("Register"),
               ),

@@ -14,6 +14,17 @@ class ForgotPasswordPage extends StatefulWidget {
 class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
   TextEditingController? _emailController;
   GlobalKey<FormState>? _formKey;
+  String? validateEmail(String? formEmail) {
+    if (formEmail == null || formEmail.isEmpty) {
+      return "Email is required";
+    }
+    //RegExp için tasarım örneği
+    String pattern = r'\w+@\w+\.\w+';
+    RegExp regex = RegExp(pattern);
+    if (!regex.hasMatch(formEmail)) return "Invalid email adress";
+    return null;
+  }
+
   @override
   void initState() {
     _formKey = GlobalKey<FormState>();
@@ -57,12 +68,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                     labelText: "Enter Your Email",
                   ),
                   keyboardType: TextInputType.emailAddress,
-                  validator: (value) {
-                    var result = (value == null || value.isEmpty)
-                        ? "Email is Required"
-                        : null;
-                    return result;
-                  },
+                  validator: validateEmail,
                   controller: _emailController,
                 ),
                 const SizedBox(
