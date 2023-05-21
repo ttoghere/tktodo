@@ -9,6 +9,7 @@ import 'package:tktodo/repositories/auth/auth_repository.dart';
 import 'package:tktodo/repositories/tasks/task_repository.dart';
 import 'package:tktodo/services/app_router.dart';
 import 'firebase_options.dart';
+import 'package:flutter/services.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -17,6 +18,9 @@ void main() async {
   );
   HydratedBloc.storage = await HydratedStorage.build(
       storageDirectory: await getApplicationDocumentsDirectory());
+  SystemChrome.setPreferredOrientations([
+    DeviceOrientation.portraitUp,
+  ]);
 
   runApp(const MyApp());
 }
