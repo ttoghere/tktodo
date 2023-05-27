@@ -98,6 +98,25 @@ class AppDrawer extends StatelessWidget {
                     style: Theme.of(context).textTheme.labelLarge,
                   ),
                 ),
+                const Divider(
+                  thickness: 2,
+                ),
+                ListTile(
+                  onTap: () {
+                    context
+                        .read<AuthRepository>()
+                        .deleteAccountAndData()
+                        .whenComplete(() => Navigator.of(context)
+                            .pushReplacementNamed(LoginPage.routeName));
+                  },
+                  leading: const Icon(
+                    Icons.delete_forever,
+                  ),
+                  title: Text(
+                    "Delete Account and Saved Data",
+                    style: Theme.of(context).textTheme.labelLarge,
+                  ),
+                ),
               ],
             );
           },

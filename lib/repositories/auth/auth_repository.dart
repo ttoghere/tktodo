@@ -1,5 +1,6 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:developer';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart' as authentication;
@@ -73,5 +74,42 @@ class AuthRepository extends BaseAuthRepository {
   @override
   Future<void> signOut() async {
     auth.signOut();
+  }
+
+
+  @override
+  Future<void> deleteAccountAndData() async {
+    try {
+      // Step 1: Delete User Account
+      User? user = FirebaseAuth.instance.currentUser;
+      if (user != null) {
+        // Get the user's email
+        String? userEmail = user.email;
+
+        // Step 2: Delete Firestore Collection
+        if (userEmail != null) {
+          WriteBatch batch = FirebaseFirestore.instance.batch();
+
+          // Delete user's collection
+          DocumentReference userCollectionRef =
+              FirebaseFirestore.instance.collection(userEmail).doc();
+          batch.delete(userCollectionRef);
+
+          // Delete user account
+          batch.delete(userCollectionRef);
+          await batch.commit();
+
+          // Step 3: Delete User Account
+          await user.delete();
+          log('User account and associated data deleted successfully.');
+        } else {
+          log('User email is not available.');
+        }
+      } else {
+        log('No user is currently signed in.');
+      }
+    } catch (e) {
+      log('Failed to delete account and data: $e');
+    }
   }
 }
